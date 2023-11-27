@@ -534,7 +534,7 @@ func (db *dm) SqlType(c *core.Column) string {
 }
 
 func (db *dm) AutoIncrStr() string {
-	return "AUTO_INCREMENT"
+	return "IDENTITY(1,1)"
 }
 
 func (db *dm) SupportInsertMany() bool {
@@ -584,11 +584,14 @@ func (db *dm) CreateTableSql(table *core.Table, tableName, storeEngine, charset 
 
 	for _, colName := range table.ColumnsSeq() {
 		col := table.GetColumn(colName)
-		/*if col.IsPrimaryKey && len(pkList) == 1 {
-			sql += col.String(b.dialect)
-		} else {*/
+		if col.IsPrimaryKey && len(pkList) == 1 {
+			tmp := col.String(db)
+			regex := regexp.MustCompile(`PRIMARY KEY`)
+			modifiedStr := regex.ReplaceAllString(tmp, "")
+			sql += modifiedStr
+		} else {
 		sql += col.StringNoPk(db)
-		// }
+		 }
 		sql = strings.TrimSpace(sql)
 		sql += ", "
 	}
@@ -613,6 +616,10 @@ func (db *dm) CreateTableSql(table *core.Table, tableName, storeEngine, charset 
 	}
 	return sql
 }
+
+
+
+
 
 func (db *dm) IndexCheckSql(tableName, idxName string) (string, []interface{}) {
 	args := []interface{}{tableName, idxName}
