@@ -9,7 +9,7 @@ import (
 	"fmt"
 	_ "gitee.com/chunanyong/dm" 
 	"github.com/go-xorm/xorm"
-	_ "github.com/sjm1327605995/dm-xorm"
+	_ "github.com/bulesky29/dm-xorm"
 	"xorm.io/core"
 )
 
